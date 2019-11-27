@@ -52,7 +52,7 @@ public class TestAppium extends Thread {
         driver.get("https://www.google.com");
         WebElement searchInput = getElement("input[name=q]");
         searchInput.sendKeys("cats");
-        Thread.sleep(100);
+        //Thread.sleep(100);
         // Search icon
         getElement("button:not([jscontroller])").click();
         // Click on the "Images" tabs
