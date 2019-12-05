@@ -1,11 +1,18 @@
 package com.company;
 
+
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.ios.IOSDriver;
+import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.server.SeleniumServer;
+import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.safari.SafariOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -17,6 +24,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -31,29 +39,25 @@ public class TestAppium extends Thread {
         start();
     }
 
-    public static AppiumDriver driver;
+    public static SafariDriver driver;
 
     public static WebElement getElement(String cssSelector) {
         return getElements(cssSelector).get(0);
     }
 
     public static List<WebElement> getElements(String cssSelector) {
-        WebDriverWait wait = new WebDriverWait(driver, 3);
-        return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(cssSelector)));
+        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+//        WebDriverWait wait = new WebDriverWait(driver, 3);
+//        return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(cssSelector)));
+        return driver.findElementsByCssSelector(cssSelector);
     }
 
-    public static void main(String[] args) throws MalformedURLException, InterruptedException, FileNotFoundException, IOException {
-        DesiredCapabilities capabilities = new DesiredCapabilities();
-        capabilities.setCapability("deviceName", "iPhone SE");
-        capabilities.setCapability("platformName", "iOS");
-        capabilities.setCapability("platformVersion", "11.3");
-        capabilities.setCapability(CapabilityType.BROWSER_NAME, "safari");
-        driver = new IOSDriver(new URL("http://0.0.0.0:4723/wd/hub"), capabilities);
-        driver.get("https://www.google.com");
+    public static void main(String[] args) throws InterruptedException {
+        WebDriver driver = new SafariDriver();
+        driver.manage().window().maximize();
+        driver.navigate().to("http://www.google.com/");
         WebElement searchInput = getElement("input[name=q]");
         searchInput.sendKeys("cats");
-        //Thread.sleep(100);
-        // Search icon
         getElement("button:not([jscontroller])").click();
         // Click on the "Images" tabs
         getElement("#hdtb-msb .hdtb-mitem:nth-child(2) > .q").click();
