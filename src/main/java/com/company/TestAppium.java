@@ -5,8 +5,10 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.ios.IOSDriver;
 import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -39,7 +41,7 @@ public class TestAppium extends Thread {
         start();
     }
 
-    public static SafariDriver driver;
+    public static WebDriver driver;
 
     public static WebElement getElement(String cssSelector) {
         return getElements(cssSelector).get(0);
@@ -47,22 +49,23 @@ public class TestAppium extends Thread {
 
     public static List<WebElement> getElements(String cssSelector) {
         driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
-//        WebDriverWait wait = new WebDriverWait(driver, 3);
-//        return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(cssSelector)));
-        return driver.findElementsByCssSelector(cssSelector);
+        WebDriverWait wait = new WebDriverWait(driver, 3);
+        return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.cssSelector(cssSelector)));
     }
 
     public static void main(String[] args) throws InterruptedException {
-        WebDriver driver = new SafariDriver();
+        System.setProperty("webdriver.chrome.driver", "/Users/nafanaseva/Downloads/chromedriver");
+        driver = new ChromeDriver();
         driver.manage().window().maximize();
         driver.navigate().to("http://www.google.com/");
         WebElement searchInput = getElement("input[name=q]");
         searchInput.sendKeys("cats");
-        getElement("button:not([jscontroller])").click();
+        searchInput.sendKeys(Keys.ENTER);
         // Click on the "Images" tabs
         getElement("#hdtb-msb .hdtb-mitem:nth-child(2) > .q").click();
         List<TestAppium> picSaveThreads = new ArrayList<>();
-        List<WebElement> picturesWebElements = getElements("[data-id=\"GRID_STATE0\"] img[jsname][src^=\"data\"]");
+       // List<WebElement> picturesWebElements = getElements("[data-id=\"GRID_STATE0\"] img[jsname][src^=\"data\"]");
+        List<WebElement> picturesWebElements = getElements("#isr_mc img[jsname][src^=\\\"data\\\"]");
         List<String> picFileNames = new ArrayList<>();
         for (int i = 0; i < picturesWebElements.size(); i++) {
             picFileNames.add("picture-" + (i + 1) + ".jpeg");
@@ -82,6 +85,7 @@ public class TestAppium extends Thread {
         System.out.println("Creating a zip archive");
         String archiveName = "output.zip";
         pack(picFileNames, archiveName);
+        driver.quit();
     }
 
     public static void pack(List<String> filesToArchive, String archiveName) {
