@@ -1,28 +1,17 @@
 package com.company;
 
 
-import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.ios.IOSDriver;
-import org.openqa.grid.internal.utils.configuration.StandaloneConfiguration;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.remote.server.SeleniumServer;
-import org.openqa.selenium.safari.SafariDriver;
-import org.openqa.selenium.safari.SafariOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -64,8 +53,7 @@ public class TestAppium extends Thread {
         // Click on the "Images" tabs
         getElement("#hdtb-msb .hdtb-mitem:nth-child(2) > .q").click();
         List<TestAppium> picSaveThreads = new ArrayList<>();
-       // List<WebElement> picturesWebElements = getElements("[data-id=\"GRID_STATE0\"] img[jsname][src^=\"data\"]");
-        List<WebElement> picturesWebElements = getElements("#isr_mc img[jsname][src^=\\\"data\\\"]");
+        List<WebElement> picturesWebElements = getElements("#isr_mc img[src^=\"data\"]");
         List<String> picFileNames = new ArrayList<>();
         for (int i = 0; i < picturesWebElements.size(); i++) {
             picFileNames.add("picture-" + (i + 1) + ".jpeg");
